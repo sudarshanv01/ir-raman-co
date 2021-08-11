@@ -1,0 +1,11 @@
+{
+	"beta": 15,
+	"T_max": 700,
+	"T_switch": 700,
+	"T_rate_min": [700, 800],
+	"correct_background": false,
+	"calculate_eq_coverage": false,
+	"order": 1,
+	"guess_b": 0.2,
+	"initial_guess_theta": 0.5
+}
