@@ -5,15 +5,14 @@ import numpy as np
 from ase import units
 from pprint import pprint
 import matplotlib.pyplot as plt
-from useful_functions import create_output_directory
-from plot_params import get_plot_params_Arial as get_plot_params
+from plot_params import get_plot_params
 import matplotlib as mpl
 from ase.data.colors import jmol_colors
 from ase.data import atomic_numbers
-from useful_functions import get_fit_from_points
 import string
 import numpy as np
 import matplotlib.image as mpimg
+from collections import defaultdict
 
 @dataclass
 class IntensityRamanIR:
@@ -164,8 +163,6 @@ def boltzmann_coverages(xx, yy):
 
 if __name__ == '__main__':
 
-    ## to match the formatting
-    create_output_directory()
     get_plot_params()
     plt.rcParams['font.size'] = 12
     plt.rcParams['axes.labelsize'] = 12
@@ -245,19 +242,24 @@ if __name__ == '__main__':
 
     ## plot the raman / IR data
     for metal_ind, metal in enumerate(sorted(results)):
-        
-        all_IR_plot = []
-        all_Raman_plot = []
-        all_rhe_plot = []
+        # Store the potentials for the color plot
+        # The intensities will be the scatter points
+        all_IR_plot = defaultdict(list)
+        all_Raman_plot = defaultdict(list)
+        all_rhe_plot = defaultdict(list)
+
         figf, axf = plt.subplots(1, 1, figsize=(4,6), constrained_layout=True)
+
         for facet in sorted(results[metal]):
+
             fig, ax = plt.subplots(2, 1, figsize=(8,8), constrained_layout=True)
+
             for state_ind, state in enumerate(results[metal][facet]):
                 if 'sp' not in state: continue
                 if 'slab' in state: continue
                 all_nu = []; all_pot = []
                 for ic, charge in enumerate(sorted(results[metal][facet][state])):
-                    ## get the IR and Raman intensities for each 
+                    # Get the IR and Raman intensities for each 
                     print('Metal %s, facet %s, state %s, charge %s'%(metal, facet, state, charge))
                     config = {'sampling':metal, 'states':state, 'tot_charge':charge, 'facets':facet, }
                     try:
@@ -289,6 +291,7 @@ if __name__ == '__main__':
                         continue
                     ir_intensities = method.broadener[-1] * results[metal][facet][state][charge]['vibdata']['ir_intensities((D/AA)^2 amu^-1)'][-1] 
                     rhe_potential = wf - 4.4 + 0.059 * 8.9
+
                     if rhe_potential < -2: 
                         print('Too negative')
                         continue
@@ -297,9 +300,11 @@ if __name__ == '__main__':
                         ax[1].plot(frequency_range, ir_intensities, ls[state], color=cmap(ic))
                     
                     if 'sp' in state:
-                        all_IR_plot.append(results[metal][facet][state][charge]['vibdata']['ir_intensities((D/AA)^2 amu^-1)'][-1] )
-                        all_Raman_plot.append(method.raman_intensity[-1])
-                        all_rhe_plot.append(rhe_potential)
+                        # Store everything based on the facet
+                        all_IR_plot[facet].append(results[metal][facet][state][charge]['vibdata']['ir_intensities((D/AA)^2 amu^-1)'][-1] )
+                        all_Raman_plot[facet].append(method.raman_intensity[-1])
+                        all_rhe_plot[facet].append(rhe_potential)
+
                     all_nu.append(method.nu[-1])
                     all_pot.append(rhe_potential) 
                     if 'sp' in state:
@@ -307,7 +312,9 @@ if __name__ == '__main__':
                         axc[0,metal_ind].plot(rhe_potential, method.nu[-1], facet_s[facet], color=color_s[state], alpha=0.5)
 
                 try: 
-                    fit = get_fit_from_points(all_pot, all_nu, 1)
+                    fit = {}
+                    fit['fit'] = np.polyfit(all_pot, all_nu, 1)
+                    fit['p'] = np.poly1d(fit['fit'])
                     axc[0,metal_ind].plot(all_pot, fit['p'](all_pot), '-', alpha=0.25, color=color_s[state])
                     xlabel = '%s(%s)'%(metal.replace('sampling_',''), facet.replace('facet_',''))
                     vac_state = state.replace('_sp_implicit','').replace('_implicit','')
@@ -337,8 +344,11 @@ if __name__ == '__main__':
                         xycoords = 'axes fraction',\
                         color=jmol_colors[atomic_numbers[metal.replace('sampling_','')]])
 
-        ma = axc[1,metal_ind].scatter(all_Raman_plot, all_IR_plot, c=all_rhe_plot, cmap='coolwarm')
-        ma.set_clim([-2,2])
+        for i, facet in enumerate(all_IR_plot):
+            ma = axc[1,metal_ind].scatter(all_Raman_plot[facet], all_IR_plot[facet], 
+                                          c=all_rhe_plot[facet], marker=facet_s[facet], cmap='coolwarm')
+            if i == 0:
+                ma.set_clim([-2,2])
         if metal_ind == len(results)-1:
             cb = fig.colorbar(ma, ax=axc[1,metal_ind])
             cb.set_label('Potential vs. RHE')
@@ -361,10 +371,15 @@ if __name__ == '__main__':
                 axc[0,metal_ind].plot([],[], marker, color='k', label=facet.replace('facet_',''))
             axc[0,metal_ind].legend(loc='best', frameon=False, fontsize=12)
 
-    axmu.plot([], [], 'v', label='top', color='k')
-    axmu.plot([], [], 'o', label='bridge', color='k')
-    axmu.plot([], [], '*', label='fcc', color='k')
-    axmu.legend(loc='best', frameon=False, fontsize=10)
+    for a in [axmu]:
+        a.plot([], [], 'v', label='top', color='k')
+        a.plot([], [], 'o', label='bridge', color='k')
+        a.plot([], [], '*', label='fcc', color='k')
+        a.legend(loc='best', frameon=False, fontsize=10)
+    for facet, marker in facet_s.items():
+        axc[1,0].plot([],[], marker, color='k', label=facet.replace('facet_',''))
+        axc[1,0].legend(loc='best', frameon=False, fontsize=12)
+
     alphabet = list(string.ascii_lowercase)
     for i, a in enumerate(list(axc.flatten()[0:4]) + [axmu] + list(axc.flatten()[4:]) ):
         a.annotate(alphabet[i]+')', xy=(-0.1, 1.1), xycoords='axes fraction', fontsize=14)
