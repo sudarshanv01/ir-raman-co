@@ -191,29 +191,33 @@ if __name__ == '__main__':
     color_s = {'CO_site_bridge_sp_implicit':'tab:blue', \
         'CO_site_fcc_sp_implicit':'tab:green', 'CO_site_top_sp_implicit':'tab:orange'}
 
-    # The figure for the paper 
-    # figc, axc = plt.subplots(2, len(results), figsize=(14,8), constrained_layout=True)
-    figc = plt.figure(constrained_layout=True, figsize=(11,8))
-    gs = figc.add_gridspec(3, 2*len(results))
+    # Figure for IR / Raman intensities
+    figc = plt.figure(constrained_layout=True, figsize=(14,6))
+    gs = figc.add_gridspec(2, len(results)+1)
+
+    # Figure for water adsorption
+    figw = plt.figure(constrained_layout=True, figsize=(10,4))
+    gsw = figw.add_gridspec(1, 3)
+
     axc = []
     for i in range(len(results)):
         temp = []
-        for j in [0,2]:
-            temp.append(figc.add_subplot(gs[j,2*i:2*(i+1)]))
+        for j in [0,1]:
+            temp.append(figc.add_subplot(gs[j,i:(i+1)]))
         axc.append(temp)
     axc = np.array(axc).T
     ## graph for the stark tuning rate and the dipole moments
-    axmu = figc.add_subplot(gs[1,0:3])
+    axmu = figc.add_subplot(gs[:,-1])
     axmu.set_xlabel(r'$ \mu_{\mathregular{CO}^*} - \mu_{*}$ / $e\AA$')
     axmu.set_ylabel(r'Stark Tuning Rate / $\mathregular{cm}^{-1} / \mathregular{V}$')
 
 
     ## graph for the boltzmann coverages of H2O and CO
-    axb = figc.add_subplot(gs[1,6:])
+    axb = figw.add_subplot(gsw[0,0])
     axb.set_xlabel(r'$\Delta G_{\mathregular{CO}}$ / eV')
     axb.set_ylabel(r'$\Delta G_{\mathregular{H}_2\mathregular{O}}$ / eV')
 
-    axi = figc.add_subplot(gs[1,3:6])
+    axi = figw.add_subplot(gsw[0,1:])
     image = mpimg.imread('schematic/final_image.png')
     axi.imshow(image)
     axi.axis('off')
@@ -228,8 +232,6 @@ if __name__ == '__main__':
     axb.annotate('Rh(111)', xy=(-1.3,0.3), color=jmol_colors[atomic_numbers['Rh']], fontsize=10)
     axb.plot(-0.4, 0.2, 'o', color=jmol_colors[atomic_numbers['Ni']],  markersize=8)
     axb.annotate('Ni(111)', xy=(-0.4,0.4), color=jmol_colors[atomic_numbers['Ni']], fontsize=10)
-    # axb.annotate(r'$\Delta G_{\mathregular{CO}} = \Delta G_{\mathregular{H}_2\mathregular{O}}$', \
-    #                 xy=(0.05, 0.05), rotation=20, xycoords='axes fraction', color='white', )
     
 
     ## plot the coverages based on boltzmann
@@ -304,29 +306,12 @@ if __name__ == '__main__':
                         axf.plot(rhe_potential, method.nu[-1], facet_s[facet], color=color_s[state])
                         axc[0,metal_ind].plot(rhe_potential, method.nu[-1], facet_s[facet], color=color_s[state], alpha=0.5)
 
-
-                    ## plot the IR and Raman intensities on the same plot
-
-                    # print(method.raman_intensity)
-                    # print(method.raman_cs)
-                    # print(method.raman_intensity[-1])
-                    # print('IR from script')
-                    # print(method.intensities_IR[-1])
-                    # print('IR from ase')
-                    # print(results[metal][facet][state][charge]['vibdata']['ir_intensities((D/AA)^2 amu^-1)'][-1])
-                    print('Success')
-
                 try: 
                     fit = get_fit_from_points(all_pot, all_nu, 1)
                     axc[0,metal_ind].plot(all_pot, fit['p'](all_pot), '-', alpha=0.25, color=color_s[state])
                     xlabel = '%s(%s)'%(metal.replace('sampling_',''), facet.replace('facet_',''))
-                    # axmu.plot(xlabel, fit['fit'][0], 'o', color=color_s[state])
                     vac_state = state.replace('_sp_implicit','').replace('_implicit','')
                     dmu = vac_results[metal][facet][vac_state]['dipole'] - vac_results[metal][facet]['state_slab']['dipole'] 
-                    # try:
-                    #     dmu = results[metal][facet][state][0.0]['dipole'] - results[metal][facet]['state_slab_sp_implicit'][0.0]['dipole']
-                    # except KeyError:
-                    #     dmu = results[metal][facet][state][0.0]['dipole'] - results[metal][facet]['state_slab_implicit'][0.0]['dipole']
 
                     if 'top' in state:
                         marker = 'v'
@@ -334,11 +319,10 @@ if __name__ == '__main__':
                         marker = 'o'
                     else:
                         marker = '*'
-                    # axmu.plot(xlabel, dmu , marker, color='tab:red')
-                    # axnu.plot(xlabel, fit['fit'][0], marker, color='tab:blue', alpha=0.5)
                     axmu.plot(dmu, fit['fit'][0], marker, color=jmol_colors[atomic_numbers[metal.replace('sampling_','')]])
-                    print(fit, metal, facet, state)
-                except TypeError: continue
+                except TypeError:
+                    continue
+
             ax[0].set_ylabel(r'Raman Cross Section x$10^{41}$', fontsize=18)
             ax[1].set_xlabel(r'Frequency / cm$^{-1}$', fontsize=18)
             ax[1].set_ylabel(r'IR Intensity', fontsize=18)
@@ -349,7 +333,7 @@ if __name__ == '__main__':
         axf.set_xlabel(r'Potential vs. RHE')
         figf.savefig('output/%s_frequencies_compare.pdf'%metal)
 
-        axmu.annotate(metal.replace('sampling_',''), xy=(0.9-0.1*metal_ind, 0.2), \
+        axmu.annotate(metal.replace('sampling_',''), xy=(0.8, 0.2+0.1*metal_ind), \
                         xycoords = 'axes fraction',\
                         color=jmol_colors[atomic_numbers[metal.replace('sampling_','')]])
 
@@ -377,18 +361,20 @@ if __name__ == '__main__':
                 axc[0,metal_ind].plot([],[], marker, color='k', label=facet.replace('facet_',''))
             axc[0,metal_ind].legend(loc='best', frameon=False, fontsize=12)
 
-        # axc[1,metal_ind].set_ylim([0, 50])
-        # axc[1,metal_ind].set_xlim([0,100])
     axmu.plot([], [], 'v', label='top', color='k')
     axmu.plot([], [], 'o', label='bridge', color='k')
     axmu.plot([], [], '*', label='fcc', color='k')
     axmu.legend(loc='best', frameon=False, fontsize=10)
     alphabet = list(string.ascii_lowercase)
-    for i, a in enumerate(list(axc.flatten()[0:4]) + [axmu, axi, axb] + list(axc.flatten()[4:]) ):
-        a.annotate(alphabet[i]+')', xy=(-0.1, 1.1), xycoords='axes fraction', fontsize=12)
+    for i, a in enumerate(list(axc.flatten()[0:4]) + [axmu] + list(axc.flatten()[4:]) ):
+        a.annotate(alphabet[i]+')', xy=(-0.1, 1.1), xycoords='axes fraction', fontsize=14)
+
+    for i, a in enumerate([axb, axi]):
+        a.annotate(alphabet[i]+')', xy=(-0.1, 1.1), xycoords='axes fraction', fontsize=14)
 
     figc.savefig('output/IR_Raman_overall_compare.pdf')
     figc.savefig('output/IR_Raman_overall_compare.png', dpi=500)
+    figw.savefig('output/IR_Raman_water_adsorption.png', dpi=500)
 
 
 
