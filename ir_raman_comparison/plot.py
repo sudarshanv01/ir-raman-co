@@ -11,6 +11,7 @@ from ase.data.colors import jmol_colors
 from ase.data import atomic_numbers
 import string
 import numpy as np
+import csv
 import matplotlib.image as mpimg
 from collections import defaultdict
 
@@ -164,10 +165,10 @@ def boltzmann_coverages(xx, yy):
 if __name__ == '__main__':
 
     get_plot_params()
-    plt.rcParams['font.size'] = 12
-    plt.rcParams['axes.labelsize'] = 12
-    plt.rcParams['xtick.labelsize'] = 12
-    plt.rcParams['ytick.labelsize'] = 12
+    # plt.rcParams['font.size'] = 12
+    # plt.rcParams['axes.labelsize'] = 12
+    # plt.rcParams['xtick.labelsize'] = 12
+    # plt.rcParams['ytick.labelsize'] = 12
 
     ## databases to parse from
     charge_db = 'databases/charging_database.db'
@@ -189,11 +190,11 @@ if __name__ == '__main__':
         'CO_site_fcc_sp_implicit':'tab:green', 'CO_site_top_sp_implicit':'tab:orange'}
 
     # Figure for IR / Raman intensities
-    figc = plt.figure(constrained_layout=True, figsize=(14,6))
+    figc = plt.figure(constrained_layout=True, figsize=(8.2,4.5))
     gs = figc.add_gridspec(2, len(results)+1)
 
     # Figure for water adsorption
-    figw = plt.figure(constrained_layout=True, figsize=(10,4))
+    figw = plt.figure(constrained_layout=True, figsize=(8.2,3.5))
     gsw = figw.add_gridspec(1, 3)
 
     axc = []
@@ -221,14 +222,14 @@ if __name__ == '__main__':
 
 
     ## add plot for gold
-    axb.plot(0.0, 0.0, 'o', color=jmol_colors[atomic_numbers['Au']], markersize=8)
-    axb.annotate('Au(310)', xy=(0.1,0.0), color=jmol_colors[atomic_numbers['Au']], fontsize=10)
-    axb.plot(-0.9, -0.1, 'o', color=jmol_colors[atomic_numbers['Pt']], markersize=8)
-    axb.annotate('Pt(111)', xy=(-1.2,-0.4), color=jmol_colors[atomic_numbers['Pt']], fontsize=10)
-    axb.plot(-0.9, 0., 'o', color=jmol_colors[atomic_numbers['Rh']],  markersize=8)
-    axb.annotate('Rh(111)', xy=(-1.3,0.3), color=jmol_colors[atomic_numbers['Rh']], fontsize=10)
-    axb.plot(-0.4, 0.2, 'o', color=jmol_colors[atomic_numbers['Ni']],  markersize=8)
-    axb.annotate('Ni(111)', xy=(-0.4,0.4), color=jmol_colors[atomic_numbers['Ni']], fontsize=10)
+    axb.plot(0.0, 0.0, 'o', color='k')#jmol_colors[atomic_numbers['Au']], )
+    axb.annotate('Au(310)', xy=(0.1,0.0), color='k')#jmol_colors[atomic_numbers['Au']], )
+    axb.plot(-0.9, -0.1, 'o', color='k')#jmol_colors[atomic_numbers['Pt']], )
+    axb.annotate('Pt(111)', xy=(-1.2,-0.4), color='k')#jmol_colors[atomic_numbers['Pt']], )
+    axb.plot(-0.9, 0., 'o', color='k')#jmol_colors[atomic_numbers['Rh']],  )
+    axb.annotate('Rh(111)', xy=(-1.3,0.3), color='k')#jmol_colors[atomic_numbers['Rh']], )
+    axb.plot(-0.4, 0.2, 'o', color='k')#jmol_colors[atomic_numbers['Ni']],  )
+    axb.annotate('Ni(111)', xy=(-0.4,0.4), color='k')#jmol_colors[atomic_numbers['Ni']], )
     
 
     ## plot the coverages based on boltzmann
@@ -330,12 +331,13 @@ if __name__ == '__main__':
                 except TypeError:
                     continue
 
-            ax[0].set_ylabel(r'Raman Cross Section x$10^{41}$', fontsize=18)
-            ax[1].set_xlabel(r'Frequency / cm$^{-1}$', fontsize=18)
-            ax[1].set_ylabel(r'IR Intensity', fontsize=18)
+            ax[0].set_ylabel(r'Raman Cross Section x$10^{41}$', )
+            ax[1].set_xlabel(r'Frequency / cm$^{-1}$', )
+            ax[1].set_ylabel(r'IR Intensity', )
             fig.savefig('output/%s_%s_ir_raman_compare.pdf'%(metal,facet))
         
-        axf.legend(loc='best', frameon=False, fontsize=12 )
+        axf.legend(loc='best', frameon=False, )
+        # axf.legend(bbox_to_anchor=(1.04,1), borderaxespad=0)
         axf.set_ylabel(r'$\nu \left ( \mathrm{cm}^{-1} \right )$')
         axf.set_xlabel(r'Potential vs. RHE')
         figf.savefig('output/%s_frequencies_compare.pdf'%metal)
@@ -357,7 +359,8 @@ if __name__ == '__main__':
             axc[1,metal_ind].set_ylabel(r'$\mathrm{I}_{\mathrm{IR}}$ / $(D/\AA)^2 \mathregular{amu}^{-1}$')
         axc[1,metal_ind].set_xlabel(r'$\mathrm{I}_{\mathrm{Raman}}$ / $\AA^4/\mathregular{amu}$')
         axc[0,metal_ind].set_xlabel(r'Potential / V vs. RHE')
-        axc[0,metal_ind].set_title(metal.replace('sampling_',''), fontsize=14)
+        # axc[0,metal_ind].set_title(metal.replace('sampling_',''), )
+        axc[0,metal_ind].annotate(metal.replace('sampling_', ''), xy=(0.1, 0.5), xycoords='axes fraction')
         axc[0,metal_ind].set_ylim([1700, 2100])
         axc[0,metal_ind].tick_params(direction='out')
         axc[1,metal_ind].tick_params(direction='out')
@@ -368,28 +371,68 @@ if __name__ == '__main__':
         else:
             axc[0,metal_ind].annotate('top', color='tab:orange', xy=(0.7,0.6), xycoords='axes fraction')
             for facet, marker in facet_s.items():
-                axc[0,metal_ind].plot([],[], marker, color='k', label=facet.replace('facet_',''))
-            axc[0,metal_ind].legend(loc='best', frameon=False, fontsize=12)
+                axc[0,metal_ind].plot([],[], marker, color='k',) #label=facet.replace('facet_',''))
+            axc[0,metal_ind].legend(loc='best', frameon=False, )
 
     for a in [axmu]:
         a.plot([], [], 'v', label='top', color='k')
         a.plot([], [], 'o', label='bridge', color='k')
         a.plot([], [], '*', label='fcc', color='k')
-        a.legend(loc='best', frameon=False, fontsize=10)
+        # a.legend(loc='best', frameon=False, )
+        # a.legend(bbox_to_anchor=(1.04,1), borderaxespad=0)
+        a.legend(bbox_to_anchor=(0,1.02,1,0.2), loc="lower left",
+                mode="expand", borderaxespad=0, ncol=1)
     for facet, marker in facet_s.items():
-        axc[1,0].plot([],[], marker, color='k', label=facet.replace('facet_',''))
-        axc[1,0].legend(loc='best', frameon=False, fontsize=12)
+        axc[0,0].plot([],[], marker, color='k', label=facet.replace('facet_',''))
+        # axc[0,0].legend(loc='best', frameon=False, )
+        axc[0,0].legend(bbox_to_anchor=(0,1.02,1,0.2), loc="lower left",
+                mode="expand", borderaxespad=0, ncol=1)
 
     alphabet = list(string.ascii_lowercase)
     for i, a in enumerate(list(axc.flatten()[0:4]) + [axmu] + list(axc.flatten()[4:]) ):
-        a.annotate(alphabet[i]+')', xy=(-0.1, 1.1), xycoords='axes fraction', fontsize=14)
+        a.annotate(alphabet[i]+')', xy=(-0.15, 1.1), xycoords='axes fraction', )
 
     for i, a in enumerate([axb, axi]):
-        a.annotate(alphabet[i]+')', xy=(-0.1, 1.1), xycoords='axes fraction', fontsize=14)
+        a.annotate(alphabet[i]+')', xy=(-0.1, 1.1), xycoords='axes fraction', )
 
     figc.savefig('output/IR_Raman_overall_compare.pdf')
-    figc.savefig('output/IR_Raman_overall_compare.png', dpi=500)
-    figw.savefig('output/IR_Raman_water_adsorption.png', dpi=500)
+    figw.savefig('output/IR_Raman_water_adsorption.pdf')
+    figc.savefig('output/IR_Raman_overall_compare.png', dpi=1200)
+    figw.savefig('output/IR_Raman_water_adsorption.png', dpi=1200)
+
+    # Store the xy data for each axis in a csv format
+    with open('output/figure_4.csv', 'w') as f:
+        writer = csv.writer(f)
+        for i, a in enumerate(axc.flatten().tolist()[0:4] + [axmu]):
+            # write a blank row
+            writer.writerow([])
+            # Write the index of the plot
+            writer.writerow([alphabet[i]])
+            for line in a.lines:
+                x_data = line.get_xdata()
+                y_data = line.get_ydata()
+                if len(x_data)==1:
+                    x_data = x_data[0]
+                    y_data = y_data[0]
+                    writer.writerow([x_data, y_data])
+
+        for j, a in enumerate(axc.flatten().tolist()[4:]):
+            writer.writerow([])
+            data = a.collections[0].get_offsets()
+            x_data, y_data = np.array(data).T
+            writer.writerow(alphabet[j+i+1])
+            for k in range(len(x_data)):
+                writer.writerow([x_data[k], y_data[k]])
+
+    with open('output/figure_5.csv', 'w') as f:
+        writer = csv.writer(f)
+        for i, a in enumerate([axb]):
+            writer.writerow([])
+            for line in a.lines:
+                x_data = line.get_xdata()
+                y_data = line.get_ydata()
+
+                writer.writerow([x_data, y_data])
 
 
 

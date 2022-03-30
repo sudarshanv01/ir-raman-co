@@ -11,10 +11,10 @@
    inkscape:version="1.0 (4035a4f, 2020-05-01)"
    id="svg8"
    version="1.1"
-   viewBox="0 0 266.19764 155.56067"
-   height="155.56067mm"
-   width="266.19763mm"
-   inkscape:export-filename="/Users/vijays/Documents/project/7_IR_Raman/ir_raman_comparison/schematic/final_image.png"
+   viewBox="0 0 273.29423 159.54317"
+   height="159.54317mm"
+   width="273.29422mm"
+   inkscape:export-filename="/Users/vijays/Downloads/final_image.png"
    inkscape:export-xdpi="300"
    inkscape:export-ydpi="300">
   <defs
@@ -117,13 +117,27 @@
          d="M 0,0 5,-5 -12.5,0 5,5 Z"
          id="path1127-3" />
     </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="Arrow2Mend-3"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Mend">
+      <path
+         transform="scale(-0.6)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         id="path1148-8" />
+    </marker>
   </defs>
   <sodipodi:namedview
-     inkscape:window-maximized="1"
-     inkscape:window-y="25"
-     inkscape:window-x="80"
+     inkscape:window-maximized="0"
+     inkscape:window-y="121"
+     inkscape:window-x="94"
      inkscape:window-height="1387"
-     inkscape:window-width="2480"
+     inkscape:window-width="2463"
      fit-margin-bottom="1"
      fit-margin-right="1"
      fit-margin-left="1"
@@ -132,7 +146,7 @@
      inkscape:document-rotation="0"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="256.5555"
+     inkscape:cy="271.6075"
      inkscape:cx="415.15843"
      inkscape:zoom="1.16"
      inkscape:pageshadow="2"
@@ -149,12 +163,12 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     transform="translate(59.664406,-28.510136)"
+     transform="translate(59.664406,-24.527629)"
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
@@ -326,7 +340,7 @@
        d="M 7.5788922,128.04559 20.489796,104.73399"
        id="path937-8-2" />
     <g
-       style="opacity:0.344051;fill:#0000ff"
+       style="opacity:1;fill:#0000ff"
        transform="matrix(1.9476445,0,0,1.9476445,104.65726,-27.765274)"
        id="g1097">
       <path
@@ -359,7 +373,7 @@
          style="opacity:0.430868;fill:#0000ff;stroke:#bc0000;stroke-width:1;stroke-linejoin:round" />
     </g>
     <g
-       style="opacity:0.344051;fill:#008000"
+       style="opacity:1;fill:#008000"
        id="g1097-0"
        transform="matrix(1.9476445,0,0,1.9476445,114.47661,-3.082947)">
       <path
@@ -400,15 +414,16 @@
        style="opacity:0.430868;fill:none;stroke:#000000;stroke-width:1.18884;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <text
        id="text1163"
-       y="43.879749"
-       x="79.121681"
+       y="-205.05406"
+       x="53.786007"
        style="font-size:10.5833px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.264583"
        xml:space="preserve"
        inkscape:export-xdpi="300"
-       inkscape:export-ydpi="300"><tspan
+       inkscape:export-ydpi="300"
+       transform="rotate(90)"><tspan
          style="stroke-width:0.264583"
-         y="43.879749"
-         x="79.121681"
+         y="-205.05406"
+         x="53.786007"
          id="tspan1161"
          sodipodi:role="line">Increasing potential</tspan></text>
     <text
@@ -489,5 +504,43 @@
          y="118.82796"
          x="-91.900406"
          sodipodi:role="line">with larger slope</tspan></text>
+    <g
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       style="opacity:0.424437"
+       id="g873-2-0"
+       transform="translate(107.38532,-44.473802)">
+      <ellipse
+         style="opacity:1;fill:#000000;stroke:#000000;stroke-width:0.329905;stroke-linejoin:round;stroke-opacity:0.866397"
+         id="path833-7-2-2-2"
+         cx="70.935707"
+         cy="97.612999"
+         rx="9.8928776"
+         ry="10.577144" />
+      <ellipse
+         ry="8.7795372"
+         rx="8.3233595"
+         cy="78.918816"
+         cx="66.830101"
+         id="path833-7-2-4-7-4"
+         style="opacity:1;fill:#ff0000;stroke:#000000;stroke-width:0.275695;stroke-linejoin:round;stroke-opacity:0.866397" />
+    </g>
+    <path
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       style="fill:none;stroke:#000000;stroke-width:1.065;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Mend-3)"
+       d="M 128.18125,69.308864 159.08588,56.304827"
+       id="path937-8-8" />
+    <text
+       xml:space="preserve"
+       style="font-size:10.5833px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.264583"
+       x="139.45735"
+       y="75.040306"
+       id="text1798"><tspan
+         sodipodi:role="line"
+         id="tspan1796"
+         x="139.45735"
+         y="75.040306"
+         style="stroke-width:0.264583">OR</tspan></text>
   </g>
 </svg>
